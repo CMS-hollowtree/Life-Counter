@@ -1,0 +1,11 @@
+<ion-view view-title="Players">
+  <ion-content>
+    <ion-list ng-repeat="player in players">
+      <ion-item class="item item-avatar" ng-click="newMatch()">
+        <img ng-src="{{player.imgURL}}"></img>
+        <h2>{{player.userName}}</h2>
+        <h3>{{player.onlineStatus}}</h3>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
