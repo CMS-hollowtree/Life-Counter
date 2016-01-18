@@ -55,7 +55,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       views: {
         'menuContent': {
           templateUrl: 'templates/playlists.html',
-          controller: 'PlaylistsCtrl'
+          controller: 'MasterCtrl'
         }
       }
     })
@@ -68,26 +68,26 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
       }
     })
-  .state('app.single', {
-    url: '/playlists/:playlistId',
+  .state('app.match', {
+      url: '/match',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/match.html',
+          controller: 'PlayerCtrl'
+        }
+      }
+    })
+  .state('app.playlist', {
+    url: '/playlist/:id',
     views: {
       'menuContent': {
         templateUrl: 'templates/playlist.html',
-        controller: 'PlaylistCtrl'
+        controller: 'PlayerDetailCtrl'
       }
     }
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/playlists');
-})
+});
 
-
-
-.factory("onlineUsers", ['$firebase', "$rootScope", function($firebase, $rootScope){
-     // create a reference to the Firebase where we will store our data
-     var ref = new Firebase("https://chat-test-28.firebaseio.com/presence");
- 
-     // this uses AngularFire to create the synchronized array
-     return $firebase(ref.limitToLast(10)).$asArray();
-}]);
 

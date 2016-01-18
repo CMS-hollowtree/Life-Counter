@@ -48,7 +48,7 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
         alert('error');
       }
       else {
-        alert('success');
+        //alert('success');
         
       }
       $rootScope.authData = authData;
@@ -64,6 +64,7 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
     userRef.child('currentLife').set(20);
     userRef.child('userName').set($rootScope.authData.google.displayName);
     userRef.child('imgURL').set($rootScope.authData.google.profileImageURL);
+    userRef.child('uid').set($rootScope.authData.google.id);
 
     }
   });
@@ -97,36 +98,65 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
       };
 }])
 
-.controller('PlayerCtrl', ["$rootScope", "$scope", "onlineUsers", function($rootScope, $scope, onlineUsers) {
-  $scope.players = onlineUsers;
-   $scope.matchPlayers = [];
-  $scope.match = {};
-  $scope.newMatch = function(matchPlayers) {
-    var ref = new Firebase("https://chat-test-28.firebaseio.com/matches");
-    ref.push({ matchPlayers });
+.controller('PlayerCtrl', function($rootScope, $scope, onlineUsers, PeopleService, MatchService) {
+    $scope.players = MatchService.getPeople();
 
+   $scope.addLife = function() {
+        var userRef = new Firebase('https://chat-test-28.firebaseio.com/matches/' + $rootScope.currentMatchId);
+      userRef.child($rootScope.authData.google.id).transaction(function(currentLife) {
+        return currentLife+1;
+      })
+      };
+      $scope.subLife = function() {
+        var userRef = new Firebase('https://chat-test-28.firebaseio.com/matches/' + $rootScope.currentMatchId);
+      userRef.child($rootScope.authData.google.id).transaction(function(currentLife) {
+        return currentLife-1;
+      })
+      };
+})
+
+
+.controller('MasterCtrl', function($scope, PeopleService){
+  $scope.people = PeopleService.getPeople();
+})
+
+.controller('MatchCtrl', function($scope, PeopleService){
+  
+})
+ 
+.controller('PlayerDetailCtrl', function($rootScope, $state, $scope, $stateParams, PeopleService, MatchService){
+  var personId = $stateParams.id;
+  $scope.person = PeopleService.getPerson(personId);
+
+  
+    $scope.newMatch = function(matchPlayers) {
+      $scope.matchPlayers = [];
+  
+      var ref = new Firebase("https://chat-test-28.firebaseio.com/matches");
+      var newRef = ref.push();
+        newRef.child($rootScope.authData.google.id).set(20);
+        newRef.child(personId).set(20);
+      $rootScope.currentMatchId = newRef.key();
+      console.log($rootScope.currentMatchId);
+      $state.go('app.match'); 
 
   };
-}])
+})
 
-.controller('MatchCtrl', ["$rootScope", "$scope", "onlineUsers", function($rootScope, $scope, onlineUsers) {
+.factory('PeopleService', function($firebase, $rootScope){
  
-}])
-
-.controller('PlaylistsCtrl', function($scope) {
-  $scope.playlists = [
-    { title: 'Reggae', id: 1 },
-    { title: 'Chill', id: 2 },
-    { title: 'Dubstep', id: 3 },
-    { title: 'Indie', id: 4 },
-    { title: 'Rap', id: 5 },
-    { title: 'Cowbell', id: 6 }
-  ];
+  var ref = new Firebase('https://chat-test-28.firebaseio.com/presence');
+ 
+  return {
+    getPeople: function(){ 
+      return $firebase(ref).$asArray();
+    },
+    getPerson: function(personId){
+    return $firebase(ref.child(personId)).$asObject();
+   console.log(personId);
+    }
+  }  
 })
-
-.controller('PlaylistCtrl', function($scope, $stateParams) {
-})
-
 
 .factory("onlineUsers", ['$firebase', "$rootScope", function($firebase, $rootScope){
      // create a reference to the Firebase where we will store our data
@@ -134,5 +164,20 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
  
      // this uses AngularFire to create the synchronized array
      return $firebase(ref.limitToLast(10)).$asArray();
-}]);
+}])
 
+
+.factory("MatchService", ['$firebase', "$rootScope", function($firebase, $rootScope){
+     // create a reference to the Firebase where we will store our data
+     var ref = new Firebase("https://chat-test-28.firebaseio.com/matches");
+    return {
+      getPeople: function(){ 
+       return $firebase(ref.child($rootScope.currentMatchId)).$asArray();
+      },
+      getPerson: function(personId){
+       // return $firebase(ref.child(personId)).$asObject();
+     // console.log(personId);
+    }
+  }  
+
+}]);

@@ -1,5 +1,20 @@
 <ion-view view-title="Playlist">
   <ion-content>
-    <h1>Playlist</h1>
+
+    <div class="list card">
+
+  <div class="item item-avatar">
+    <img ng-src="{{person.imgURL}}">
+      <h2>{{person.userName}}</h2>
+        <p>{{person.uid}}</p>
+      <p>{{person.onlineStatus}}</p>
+  </div>
+
+  <button class="button button-full balanced" ng-click="newMatch()">
+    <i class="icon ion-android-add-circle"></i>
+    Start a Match
+  </button>
+
+</div>
   </ion-content>
 </ion-view>
