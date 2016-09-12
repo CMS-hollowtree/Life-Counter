@@ -1,11 +1,18 @@
 <ion-view view-title="Match">
   <ion-content>
-
     <ion-list>
       <ion-item class="item item-avatar" ng-repeat="player in players">
-       //<img ng-src="{{person.imgURL}}"></img>
+       <img ng-src="{{player.imgURL}}"></img>
         <h2>{{player.userName}}</h2>
+        {{player.currentLife}}
       </ion-item>
     </ion-list>
   </ion-content>
+  <div class="bar bar-footer">
+    <button class="button button-icon ion-android-add-circle" ng-click="addLife()">
+    </button>
+      <div class="title">Life Counter</div>
+    <button class="button button-icon ion-android-remove-circle" ng-click="subLife()">
+    </button>
+  </div>
 </ion-view>

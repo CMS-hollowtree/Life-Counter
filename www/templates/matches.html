@@ -1,26 +1,9 @@
 <ion-view view-title="Matches">
-
   <ion-content>
-  <ion-header-bar>
-    <h3>Create Match</h3>
-    <div class="buttons">
-      <button class="button button-clear" ng-click="modal.show()">+</button>
-    </div>
-  </ion-header-bar>
     <ion-list>
-      <ion-item>
+      <ion-item class="item item-avatar" ng-repeat="match in matches" href="#/app/playlist/{{match.$id}}">
+        <h2>{{match}}</h2>
       </ion-item>
     </ion-list>
   </ion-content>
 </ion-view>
-<script id="modal.html" type="text/ng-template">
-      <div class="modal">
-        <header class="bar bar-header bar-positive">
-          <h1 class="title">I'm A Modal</h1>
-          <div class="button button-clear" ng-click="modal.hide()"><span class="icon ion-close"></span></div>
-        </header>
-        <content has-header="true" padding="true">
-          <p>This is a modal</p>
-        </content>
-      </div>
-</script>

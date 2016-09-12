@@ -1,10 +1,9 @@
 <ion-view view-title="Players">
   <ion-content>
-    <ion-list ng-repeat="player in players">
-      <ion-item  class="item item-avatar" ng-click="newMatch()" href="#/players/{{player.id}}">
-        <img ng-src="{{player.imgURL}}"></img>
-        <h2 ng-model="matchPlayers.player">{{player.userName}}</h2>
-        <h3>{{player.onlineStatus}}</h3>
+    <ion-list>
+      <ion-item class="item item-avatar" ng-repeat="person in people" href="#/app/playlist/{{person.$id}}">
+       <img ng-src="{{person.imgURL}}"></img>
+        <h2>{{person.userName}}</h2>
       </ion-item>
     </ion-list>
   </ion-content>

@@ -32,16 +32,10 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
   // Perform the login action when the user submits the login form
   $scope.doLogin = function() {
     console.log('Doing login', $scope.loginData);
-
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-      //Set messages to chatMessages factory which returns the firebase data
     $scope.users = onlineUsers;
-    
-    //Initialize message object
     $scope.user = {};
-
     var ref = new Firebase('https://chat-test-28.firebaseio.com/');
+
     ref.authWithOAuthPopup('google', function(error, authData) {
       var authData = ref.getAuth();
       if(error){
@@ -49,135 +43,108 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
       }
       else {
         //alert('success');
-        
       }
       $rootScope.authData = authData;
-      console.log(authData);
-
       var amOnline = new Firebase('https://chat-test-28.firebaseio.com/.info/connected');
-
       var userRef = new Firebase('https://chat-test-28.firebaseio.com/presence/' + $rootScope.authData.google.id);
+
       amOnline.on('value', function(snapshot) {
-  if (snapshot.val()) {
-    userRef.child('onlineStatus').onDisconnect().set('☆ offline');
-    userRef.child('onlineStatus').set('☆ online');
-    userRef.child('currentLife').set(20);
-    userRef.child('userName').set($rootScope.authData.google.displayName);
-    userRef.child('imgURL').set($rootScope.authData.google.profileImageURL);
-    userRef.child('uid').set($rootScope.authData.google.id);
-
-    }
-  });
-    
-  });
-
-
+        if (snapshot.val()) {
+          userRef.child('onlineStatus').onDisconnect().set('☆ offline');
+          userRef.child('onlineStatus').set('☆ online');
+          userRef.child('currentLife').set(20);
+          userRef.child('userName').set($rootScope.authData.google.displayName);
+          userRef.child('imgURL').set($rootScope.authData.google.profileImageURL);
+          userRef.child('uid').set($rootScope.authData.google.id);
+        }
+      });
+    });
   $scope.closeLogin();
-
   };
 })
 
-.controller('LifeCtrl', ["$rootScope", "$scope", "onlineUsers", function($rootScope, $scope, onlineUsers) {
-   //Set messages to chatMessages factory which returns the firebase data
-    $scope.users = onlineUsers;
-    
-    //Initialize message object
-    $scope.user = {};
-
-  $scope.addLife = function() {
-        var userRef = new Firebase('https://chat-test-28.firebaseio.com/presence/' + $rootScope.authData.google.id);
-      userRef.child('currentLife').transaction(function(currentLife) {
-        return currentLife+1;
-      })
-      };
-      $scope.subLife = function() {
-        var userRef = new Firebase('https://chat-test-28.firebaseio.com/presence/' + $rootScope.authData.google.id);
-      userRef.child('currentLife').transaction(function(currentLife) {
-        return currentLife-1;
-      })
-      };
-}])
-
 .controller('PlayerCtrl', function($rootScope, $scope, onlineUsers, PeopleService, MatchService) {
-    $scope.players = MatchService.getPeople();
+   $scope.players = MatchService.getPeople($rootScope.currentMatchId);
 
    $scope.addLife = function() {
-        var userRef = new Firebase('https://chat-test-28.firebaseio.com/matches/' + $rootScope.currentMatchId);
-      userRef.child($rootScope.authData.google.id).transaction(function(currentLife) {
-        return currentLife+1;
-      })
-      };
-      $scope.subLife = function() {
-        var userRef = new Firebase('https://chat-test-28.firebaseio.com/matches/' + $rootScope.currentMatchId);
-      userRef.child($rootScope.authData.google.id).transaction(function(currentLife) {
-        return currentLife-1;
-      })
-      };
+      MatchService.addLife();
+    };
+    $scope.subLife = function() {
+      MatchService.subLife();
+    };
 })
-
 
 .controller('MasterCtrl', function($scope, PeopleService){
   $scope.people = PeopleService.getPeople();
 })
 
 .controller('MatchCtrl', function($scope, PeopleService){
-  
+  $scope.matches = MatchService.getMatches();
 })
- 
+
 .controller('PlayerDetailCtrl', function($rootScope, $state, $scope, $stateParams, PeopleService, MatchService){
   var personId = $stateParams.id;
   $scope.person = PeopleService.getPerson(personId);
-
-  
-    $scope.newMatch = function(matchPlayers) {
-      $scope.matchPlayers = [];
-  
-      var ref = new Firebase("https://chat-test-28.firebaseio.com/matches");
-      var newRef = ref.push();
-        newRef.child($rootScope.authData.google.id).set(20);
-        newRef.child(personId).set(20);
-      $rootScope.currentMatchId = newRef.key();
-      console.log($rootScope.currentMatchId);
-      $state.go('app.match'); 
-
+  $scope.newMatch = function(matchPlayers) {
+  MatchService.addMatch(personId, $scope.person.imgURL, $scope.person.userName);
+  $state.go('app.match');
   };
 })
 
 .factory('PeopleService', function($firebase, $rootScope){
- 
-  var ref = new Firebase('https://chat-test-28.firebaseio.com/presence');
- 
+  var ref = new Firebase('https://chat-test-28.firebaseio.com/');
   return {
-    getPeople: function(){ 
-      return $firebase(ref).$asArray();
+    getPeople: function(){
+      return $firebase(ref.child('presence')).$asArray();
     },
     getPerson: function(personId){
-    return $firebase(ref.child(personId)).$asObject();
-   console.log(personId);
+      return $firebase(ref.child('presence').child(personId)).$asObject();
     }
-  }  
+  }
 })
 
 .factory("onlineUsers", ['$firebase', "$rootScope", function($firebase, $rootScope){
-     // create a reference to the Firebase where we will store our data
      var ref = new Firebase("https://chat-test-28.firebaseio.com/presence");
- 
-     // this uses AngularFire to create the synchronized array
      return $firebase(ref.limitToLast(10)).$asArray();
 }])
 
-
 .factory("MatchService", ['$firebase', "$rootScope", function($firebase, $rootScope){
-     // create a reference to the Firebase where we will store our data
-     var ref = new Firebase("https://chat-test-28.firebaseio.com/matches");
+     var ref = new Firebase("https://chat-test-28.firebaseio.com/");
     return {
-      getPeople: function(){ 
-       return $firebase(ref.child($rootScope.currentMatchId)).$asArray();
+      getPeople: function(matchID){
+       return $firebase(ref.child('matches').child(matchID).child('players')).$asArray();
       },
-      getPerson: function(personId){
-       // return $firebase(ref.child(personId)).$asObject();
-     // console.log(personId);
+      getMatches: function(uid){
+        return $firebase(ref.child('presence').child(uid).child('matches')).$asArray();
+      },
+      addLife: function(){
+        ref.child('matches').child($rootScope.currentMatchId).child('players').child($rootScope.authData.google.id).child('currentLife').transaction(function(currentLife) {
+          return currentLife+1;
+        })
+      },
+      subLife: function(){
+        ref.child('matches').child($rootScope.currentMatchId).child('players').child($rootScope.authData.google.id).child('currentLife').transaction(function(currentLife) {
+          return currentLife-1;
+        })
+      },
+      addMatch: function(personId, pimgURL, puserName){
+        var newRef = ref.child('matches').push();
+          newRef.child('players').child($rootScope.authData.google.id).set({
+            uid: $rootScope.authData.google.id,
+            imgURL: $rootScope.authData.google.profileImageURL,
+            userName: $rootScope.authData.google.displayName,
+            currentLife: 20
+          });
+          newRef.child('players').child(personId).set({
+            uid: personId,
+            imgURL: pimgURL,
+            userName: puserName,
+            currentLife: 20
+          });
+        $rootScope.currentMatchId = newRef.key();
+        ref.child('presence').child($rootScope.authData.google.id).child('matchIDs').push($rootScope.currentMatchId);
+        ref.child('presence').child(personId).child('matchIDs').push($rootScope.currentMatchId);
+      return;
     }
-  }  
-
+  }
 }]);
