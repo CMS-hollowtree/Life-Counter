@@ -78,15 +78,21 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
   $scope.people = PeopleService.getPeople();
 })
 
-.controller('MatchCtrl', function($scope, PeopleService){
-  $scope.matches = MatchService.getMatches();
+.controller('MatchCtrl', function($rootScope, $scope, PeopleService, MatchService){
+  $scope.matches = MatchService.getMatches($rootScope.authData.google.id);
+  for (m in $scope.matches){
+	console.log(m);  
+  };
+	//console.log($scope.matches);
 })
 
 .controller('PlayerDetailCtrl', function($rootScope, $state, $scope, $stateParams, PeopleService, MatchService){
   var personId = $stateParams.id;
   $scope.person = PeopleService.getPerson(personId);
+  
   $scope.newMatch = function(matchPlayers) {
-  MatchService.addMatch(personId, $scope.person.imgURL, $scope.person.userName);
+	MatchService.addMatch(personId, $scope.person.imgURL, $scope.person.userName);
+  
   $state.go('app.match');
   };
 })
@@ -115,7 +121,7 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
        return $firebase(ref.child('matches').child(matchID).child('players')).$asArray();
       },
       getMatches: function(uid){
-        return $firebase(ref.child('presence').child(uid).child('matches')).$asArray();
+        return $firebase(ref.child('presence').child(uid).child('matchIDs')).$asArray();
       },
       addLife: function(){
         ref.child('matches').child($rootScope.currentMatchId).child('players').child($rootScope.authData.google.id).child('currentLife').transaction(function(currentLife) {
@@ -142,8 +148,12 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
             currentLife: 20
           });
         $rootScope.currentMatchId = newRef.key();
-        ref.child('presence').child($rootScope.authData.google.id).child('matchIDs').push($rootScope.currentMatchId);
-        ref.child('presence').child(personId).child('matchIDs').push($rootScope.currentMatchId);
+        ref.child('presence').child($rootScope.authData.google.id).child('matchIDs').push({
+			id: $rootScope.currentMatchId
+		});
+        ref.child('presence').child(personId).child('matchIDs').push({
+			id: $rootScope.currentMatchId
+		});
       return;
     }
   }
