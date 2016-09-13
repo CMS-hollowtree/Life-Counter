@@ -79,20 +79,28 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
 })
 
 .controller('MatchCtrl', function($rootScope, $scope, PeopleService, MatchService){
-  $scope.matches = MatchService.getMatches($rootScope.authData.google.id);
-  for (m in $scope.matches){
-	console.log(m);  
-  };
+  $scope.matchIDs = MatchService.getMatches($rootScope.authData.google.id);
+  $scope.matches = [];
+  $scope.matchIDs.$loaded()
+    .then(function(){
+        angular.forEach($scope.matchIDs, function(match) {
+            console.log(match.id);
+            $scope.matches.push({
+              id: match.id,
+              info: MatchService.getPeople(match.id)
+            });
+        })
+    });
 	//console.log($scope.matches);
 })
 
 .controller('PlayerDetailCtrl', function($rootScope, $state, $scope, $stateParams, PeopleService, MatchService){
   var personId = $stateParams.id;
   $scope.person = PeopleService.getPerson(personId);
-  
+
   $scope.newMatch = function(matchPlayers) {
 	MatchService.addMatch(personId, $scope.person.imgURL, $scope.person.userName);
-  
+
   $state.go('app.match');
   };
 })

@@ -50,6 +50,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     })
   .state('app.matches', {
+      cache: false,
       url: '/matches',
       views: {
         'menuContent': {
