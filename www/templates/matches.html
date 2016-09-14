@@ -1,21 +1,21 @@
 <ion-view view-title="Matches">
   <ion-content>
-    <ion-list ng-repeat="match in matches">
-      <div class="card">
+    <ion-list ng-repeat="match in matches | orderBy:'':true">
+      <div class="card" ng-click="joinMatch(match.id)">
         <div class="item item-divider">
-          {{match[0]}}
+          {{match.info.matchNic}}
         </div>
         <div class="item item-text-wrap">
-          <ion-item  ng-repeat="players in match">
-            <ion-item class="item item-avatar" ng-repeat="player in players" href="">
+          <ion-item ng-repeat="player in match.data">
+            {{player.userName}}
+            <div class="item item-avatar">
               <img ng-src="{{player.imgURL}}"></img>
-              {{player.userName}}
               {{player.currentLife}}
-            </ion-item>
+            </div>
           </ion-item>
         </div>
         <div class="item item-divider">
-          {{match[1]}}
+           Started: <time>{{match.info.startedAt | amTimeAgo:true}}</time>
         </div>
       </div>
     </ion-list>

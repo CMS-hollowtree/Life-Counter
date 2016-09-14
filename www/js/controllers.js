@@ -65,7 +65,6 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
 
 .controller('PlayerCtrl', function($rootScope, $scope, onlineUsers, PeopleService, MatchService) {
    $scope.players = MatchService.getPeople($rootScope.currentMatchId);
-
    $scope.addLife = function() {
       MatchService.addLife();
     };
@@ -78,7 +77,7 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
   $scope.people = PeopleService.getPeople();
 })
 
-.controller('MatchCtrl', function($rootScope, $scope, PeopleService, MatchService){
+.controller('MatchCtrl', function($rootScope, $state, $scope, PeopleService, MatchService){
   $scope.matchIDs = MatchService.getMatches($rootScope.authData.google.id);
   $scope.matches = [];
   $scope.matchIDs.$loaded()
@@ -87,11 +86,16 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
             console.log(match.id);
             $scope.matches.push({
               id: match.id,
-              info: MatchService.getPeople(match.id)
+              data: MatchService.getPeople(match.id),
+              info: MatchService.getInfo(match.id)
             });
         })
     });
-	//console.log($scope.matches);
+    $scope.joinMatch = function(matchID) {
+      console.log(matchID);
+      $rootScope.currentMatchId = matchID;
+      $state.go('app.match');
+    }
 })
 
 .controller('PlayerDetailCtrl', function($rootScope, $state, $scope, $stateParams, PeopleService, MatchService){
@@ -99,9 +103,9 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
   $scope.person = PeopleService.getPerson(personId);
 
   $scope.newMatch = function(matchPlayers) {
-	MatchService.addMatch(personId, $scope.person.imgURL, $scope.person.userName);
-
-  $state.go('app.match');
+    var matchNic = 'TEST'
+    MatchService.addMatch(personId, $scope.person.imgURL, $scope.person.userName, matchNic);
+    $state.go('app.match');
   };
 })
 
@@ -128,6 +132,9 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
       getPeople: function(matchID){
        return $firebase(ref.child('matches').child(matchID).child('players')).$asArray();
       },
+      getInfo: function(matchID){
+       return $firebase(ref.child('matches').child(matchID).child('info')).$asObject();
+      },
       getMatches: function(uid){
         return $firebase(ref.child('presence').child(uid).child('matchIDs')).$asArray();
       },
@@ -141,7 +148,7 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
           return currentLife-1;
         })
       },
-      addMatch: function(personId, pimgURL, puserName){
+      addMatch: function(personId, pimgURL, puserName, matchNic){
         var newRef = ref.child('matches').push();
           newRef.child('players').child($rootScope.authData.google.id).set({
             uid: $rootScope.authData.google.id,
@@ -155,12 +162,16 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
             userName: puserName,
             currentLife: 20
           });
+          newRef.child('info').update({
+            matchNic: matchNic,
+            startedAt: Firebase.ServerValue.TIMESTAMP
+          });
         $rootScope.currentMatchId = newRef.key();
         ref.child('presence').child($rootScope.authData.google.id).child('matchIDs').push({
-			id: $rootScope.currentMatchId
+			       id: $rootScope.currentMatchId
 		});
         ref.child('presence').child(personId).child('matchIDs').push({
-			id: $rootScope.currentMatchId
+		         id: $rootScope.currentMatchId
 		});
       return;
     }
