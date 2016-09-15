@@ -7,7 +7,7 @@
 
 //var ngModule = angular.module('ngApp',['angularMoment']);
 //ngModule.constant('moment');
-angular.module('starter', ['ionic', 'starter.controllers', 'angularMoment'])
+angular.module('starter', ['ionic', 'starter.controllers', 'angularMoment', 'ionic-material'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {

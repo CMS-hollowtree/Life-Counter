@@ -50,21 +50,35 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
 
       amOnline.on('value', function(snapshot) {
         if (snapshot.val()) {
-          userRef.child('onlineStatus').onDisconnect().set('☆ offline');
-          userRef.child('onlineStatus').set('☆ online');
-          userRef.child('currentLife').set(20);
+          userRef.child('lastSeen').set(null);
+		  userRef.child('online').set(true);
           userRef.child('userName').set($rootScope.authData.google.displayName);
           userRef.child('imgURL').set($rootScope.authData.google.profileImageURL);
           userRef.child('uid').set($rootScope.authData.google.id);
+		  
+		  userRef.child('lastSeen').onDisconnect().set(Firebase.ServerValue.TIMESTAMP);
+		  userRef.child('online').onDisconnect().set(null);
+		  $rootScope.online = true;
+		
         }
       });
     });
   $scope.closeLogin();
   };
+  $scope.$on('$ionicView.enter', function(e) {
+	if ($rootScope.online == true) {
+		
+	}else{
+		$scope.doLogin('google');
+	}
+});
 })
+
+
 
 .controller('PlayerCtrl', function($rootScope, $scope, onlineUsers, PeopleService, MatchService) {
    $scope.players = MatchService.getPeople($rootScope.currentMatchId);
+   $scope.matchInfo = MatchService.getInfo($rootScope.currentMatchId);
    $scope.addLife = function() {
       MatchService.addLife();
     };
@@ -101,7 +115,7 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
 .controller('PlayerDetailCtrl', function($rootScope, $state, $scope, $stateParams, PeopleService, MatchService){
   var personId = $stateParams.id;
   $scope.person = PeopleService.getPerson(personId);
-
+  
   $scope.newMatch = function(matchPlayers) {
     var matchNic = 'TEST'
     MatchService.addMatch(personId, $scope.person.imgURL, $scope.person.userName, matchNic);
@@ -128,7 +142,7 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
 
 .factory("MatchService", ['$firebase', "$rootScope", function($firebase, $rootScope){
      var ref = new Firebase("https://chat-test-28.firebaseio.com/");
-    return {
+	return {
       getPeople: function(matchID){
        return $firebase(ref.child('matches').child(matchID).child('players')).$asArray();
       },
@@ -136,7 +150,7 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
        return $firebase(ref.child('matches').child(matchID).child('info')).$asObject();
       },
       getMatches: function(uid){
-        return $firebase(ref.child('presence').child(uid).child('matchIDs')).$asArray();
+		return $firebase(ref.child('presence').child(uid).child('matchIDs')).$asArray();
       },
       addLife: function(){
         ref.child('matches').child($rootScope.currentMatchId).child('players').child($rootScope.authData.google.id).child('currentLife').transaction(function(currentLife) {
@@ -168,7 +182,7 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
           });
         $rootScope.currentMatchId = newRef.key();
         ref.child('presence').child($rootScope.authData.google.id).child('matchIDs').push({
-			       id: $rootScope.currentMatchId
+			     id: $rootScope.currentMatchId
 		});
         ref.child('presence').child(personId).child('matchIDs').push({
 		         id: $rootScope.currentMatchId

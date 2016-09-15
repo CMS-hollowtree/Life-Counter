@@ -3,7 +3,8 @@
     <ion-list>
       <ion-item class="item item-avatar" ng-repeat="person in people" href="#/app/playlist/{{person.$id}}">
        <img ng-src="{{person.imgURL}}"></img>
-        <h2>{{person.userName}}</h2>
+        <h2>{{person.userName}}</h2><br>
+		<span class="item item-divider dark"></span>
       </ion-item>
     </ion-list>
   </ion-content>

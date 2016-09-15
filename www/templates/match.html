@@ -1,18 +1,21 @@
 <ion-view view-title="Match">
-  <ion-content>
-    <ion-list>
-      <ion-item class="item item-avatar" ng-repeat="player in players">
-       <img ng-src="{{player.imgURL}}"></img>
-        <h2>{{player.userName}}</h2>
-        {{player.currentLife}}
-      </ion-item>
-    </ion-list>
-  </ion-content>
-  <div class="bar bar-footer">
-    <button class="button button-icon ion-android-add-circle" ng-click="addLife()">
-    </button>
-      <div class="title">Life Counter</div>
-    <button class="button button-icon ion-android-remove-circle" ng-click="subLife()">
-    </button>
+  <ion-content>	
+<div class="list card" ng-repeat="player in players" scroll="false">
+  <div class="item item-avatar">
+    <img src="{{player.imgURL}}">
+    <h2>{{player.userName}}</h2>
+  
+    <h1 class="text-right">
+      {{player.currentLife}}
+    </h1>
   </div>
+
+</div>
+  </ion-content>
+  <ion-footer-bar align-title="center" class="bar-dark">   
+    <button class="buttons button-clear button-icon ion-plus-round" ng-click="addLife()"></button>
+    <div class="title">Life Counter</div>
+ 
+   <button class="buttons button-clear button-icon ion-minus-round" ng-click="subLife()"></button>
+  </ion-footer-bar>
 </ion-view>

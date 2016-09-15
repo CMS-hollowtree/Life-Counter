@@ -6,8 +6,12 @@
   <div class="item item-avatar">
     <img ng-src="{{person.imgURL}}">
       <h2>{{person.userName}}</h2>
-        <p>{{person.uid}}</p>
-      <p>{{person.onlineStatus}}</p>
+		<div ng-if="person.online">
+			<p class="energized">Online</p>
+		</div>
+		<div ng-if="person.lastSeen">
+			<p>Last seen <time>{{person.lastSeen | amTimeAgo:true}}</time> ago</p>
+		</div>
   </div>
 
   <button class="button button-full balanced" ng-click="newMatch()">
