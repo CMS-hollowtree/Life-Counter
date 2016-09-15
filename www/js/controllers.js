@@ -1,14 +1,6 @@
 angular.module('starter.controllers', ['ionic', 'firebase'])
 
-.controller('AppCtrl', function($rootScope, $scope, $ionicModal, $timeout, onlineUsers) {
-
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-
+.controller('AppCtrl', function($rootScope, $scope, $ionicModal, $timeout, onlineUsers, PeopleService) {
   // Form data for the login modal
   $scope.loginData = {};
 
@@ -55,11 +47,11 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
           userRef.child('userName').set($rootScope.authData.google.displayName);
           userRef.child('imgURL').set($rootScope.authData.google.profileImageURL);
           userRef.child('uid').set($rootScope.authData.google.id);
-		  
+          $scope.player = PeopleService.getPerson($rootScope.authData.google.id);
+          $rootScope.online = true;
+
 		  userRef.child('lastSeen').onDisconnect().set(Firebase.ServerValue.TIMESTAMP);
 		  userRef.child('online').onDisconnect().set(null);
-		  $rootScope.online = true;
-		
         }
       });
     });
@@ -67,14 +59,12 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
   };
   $scope.$on('$ionicView.enter', function(e) {
 	if ($rootScope.online == true) {
-		
+
 	}else{
 		$scope.doLogin('google');
 	}
 });
 })
-
-
 
 .controller('PlayerCtrl', function($rootScope, $scope, onlineUsers, PeopleService, MatchService) {
    $scope.players = MatchService.getPeople($rootScope.currentMatchId);
@@ -91,7 +81,16 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
   $scope.people = PeopleService.getPeople();
 })
 
-.controller('MatchCtrl', function($rootScope, $state, $scope, PeopleService, MatchService){
+.controller('PlayerEditCtrl', function($rootScope, $scope, PeopleService){
+  $scope.person = PeopleService.getPerson($rootScope.authData.google.id);
+  $scope.updateInfo = function(id, pstatus){
+    PeopleService.updateInfo(id, pstatus);
+    console.log(id, pstatus);
+  };
+})
+
+.controller('MatchCtrl', function($rootScope, $timeout, $state, $scope, PeopleService, MatchService, ionicMaterialInk, ionicMaterialMotion){
+
   $scope.matchIDs = MatchService.getMatches($rootScope.authData.google.id);
   $scope.matches = [];
   $scope.matchIDs.$loaded()
@@ -115,7 +114,7 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
 .controller('PlayerDetailCtrl', function($rootScope, $state, $scope, $stateParams, PeopleService, MatchService){
   var personId = $stateParams.id;
   $scope.person = PeopleService.getPerson(personId);
-  
+
   $scope.newMatch = function(matchPlayers) {
     var matchNic = 'TEST'
     MatchService.addMatch(personId, $scope.person.imgURL, $scope.person.userName, matchNic);
@@ -131,6 +130,12 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
     },
     getPerson: function(personId){
       return $firebase(ref.child('presence').child(personId)).$asObject();
+    },
+    updateInfo: function(personId, pstatus){
+      ref.child('presence').child(personId).update({
+        status: pstatus
+      });
+        console.log(pstatus);
     }
   }
 })

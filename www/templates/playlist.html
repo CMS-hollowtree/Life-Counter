@@ -1,24 +1,20 @@
-<ion-view view-title="Playlist">
-  <ion-content>
-
-    <div class="list card">
-
-  <div class="item item-avatar">
-    <img ng-src="{{person.imgURL}}">
-      <h2>{{person.userName}}</h2>
-		<div ng-if="person.online">
-			<p class="energized">Online</p>
-		</div>
-		<div ng-if="person.lastSeen">
-			<p>Last seen <time>{{person.lastSeen | amTimeAgo:true}}</time> ago</p>
-		</div>
+<ion-view view-title="{{person.userName}}">
+  <ion-content class="stable-bg">
+    <div class="list card dark-bg">
+      <div class="item item-avatar">
+        <img ng-src="{{person.imgURL}}">
+        <h2>{{person.userName}}</h2>
+		    <div ng-if="person.online">
+			       <span class="balanced">Online</span>
+		    </div>
+		    <div ng-if="person.lastSeen">
+			       <span class="energized">Last seen <time>{{person.lastSeen | amTimeAgo:true}}</time> ago</span>
+		    </div>
+      </div>
+      <button class="button button-full" ng-click="newMatch()">
+        <i class="icon ion-android-add-circle balanced"></i>
+          Start a Match
+      </button>
   </div>
-
-  <button class="button button-full balanced" ng-click="newMatch()">
-    <i class="icon ion-android-add-circle"></i>
-    Start a Match
-  </button>
-
-</div>
   </ion-content>
 </ion-view>

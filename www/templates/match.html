@@ -1,21 +1,22 @@
 <ion-view view-title="Match">
-  <ion-content>	
-<div class="list card" ng-repeat="player in players" scroll="false">
+  <ion-content class="stable-bg">
+<div class="list card dark-bg" ng-repeat="player in players" scroll="false">
   <div class="item item-avatar">
     <img src="{{player.imgURL}}">
     <h2>{{player.userName}}</h2>
-  
-    <h1 class="text-right">
+    <h1 class="text-right light">
       {{player.currentLife}}
     </h1>
   </div>
-
 </div>
   </ion-content>
-  <ion-footer-bar align-title="center" class="bar-dark">   
-    <button class="buttons button-clear button-icon ion-plus-round" ng-click="addLife()"></button>
+  <ion-footer-bar align-title="center" class="bar-dark">
     <div class="title">Life Counter</div>
- 
-   <button class="buttons button-clear button-icon ion-minus-round" ng-click="subLife()"></button>
+    <div class="buttons buttons-right">
+      <button class="button button-fab button-balanced icon ion-plus-round" ng-click="addLife()"></button>
+    </div>
+    <div class="buttons buttons-left">
+      <button class="button button-fab button-assertive icon ion-minus-round" ng-click="subLife()"></button>
+    </div>
   </ion-footer-bar>
 </ion-view>

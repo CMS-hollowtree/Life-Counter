@@ -1,11 +1,12 @@
 <ion-view view-title="Players">
-  <ion-content>
-    <ion-list>
-      <ion-item class="item item-avatar" ng-repeat="person in people" href="#/app/playlist/{{person.$id}}">
+  <ion-content class="stable-bg">
+    <div class="card dark-bg" ng-repeat="person in people" >
+      <a class="item item-avatar" href="#/app/playlist/{{person.$id}}">
        <img ng-src="{{person.imgURL}}"></img>
-        <h2>{{person.userName}}</h2><br>
-		<span class="item item-divider dark"></span>
-      </ion-item>
-    </ion-list>
+        <h2>{{person.userName}}</h2>
+            <span class="energized" ng-if="person.lastSeen">Last seen <time>{{person.lastSeen | amTimeAgo:true}}</time> ago</span>
+      		  <span class="balanced" ng-if="person.online">Online</span>
+      </a>
+    </div>
   </ion-content>
 </ion-view>

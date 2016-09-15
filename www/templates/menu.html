@@ -13,11 +13,21 @@
   </ion-side-menu-content>
 
   <ion-side-menu side="left">
-    <ion-header-bar class="bar-assertive">
+    <ion-header-bar class="bar">
       <h1 class="title">Menu</h1>
     </ion-header-bar>
     <ion-content>
       <ion-list>
+        <div ng-if="online">
+
+          <ion-item menu-close href="#/app/playeredit" class="item item-avatar">
+
+            <img src="{{player.imgURL}}">
+            <h2>{{player.userName}}</h2>
+            <p>{{player.status}}</p>
+          </ion-item>
+
+       </div>
         <ion-item menu-close ng-click="login()">
           Login
         </ion-item>

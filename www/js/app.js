@@ -79,6 +79,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'angularMoment', 'ion
         controller: 'PlayerDetailCtrl'
       }
     }
+  })
+  .state('app.playeredit', {
+    url: '/playeredit',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/playeredit.html',
+        controller: 'PlayerEditCtrl'
+      }
+    }
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/players');
