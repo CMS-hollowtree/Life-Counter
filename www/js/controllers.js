@@ -77,8 +77,22 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
     };
 })
 
-.controller('MasterCtrl', function($scope, PeopleService){
+.controller('MasterCtrl', function($scope, PeopleService, LoadingService){
   $scope.people = PeopleService.getPeople();
+
+  $scope.showLoad = function() {
+    LoadingService.loadShow();
+  }
+  $scope.hideLoad = function() {
+    LoadingService.loadHide();
+  }
+
+  $scope.showLoad();
+
+  $scope.people.$loaded()
+    .then(function(){
+      $scope.hideLoad();
+    })
 })
 
 .controller('PlayerEditCtrl', function($rootScope, $scope, PeopleService){
@@ -89,12 +103,31 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
   };
 })
 
-.controller('MatchCtrl', function($rootScope, $timeout, $state, $scope, PeopleService, MatchService, ionicMaterialInk, ionicMaterialMotion){
-
+.controller('MatchCtrl', function($rootScope, $timeout, $state, $scope, $ionicLoading, PeopleService, MatchService, ionicMaterialInk, ionicMaterialMotion, LoadingService){
   $scope.matchIDs = MatchService.getMatches($rootScope.authData.google.id);
   $scope.matches = [];
+  
+  $scope.showLoad = function() {
+    LoadingService.loadShow();
+  }
+  $scope.hideLoad = function() {
+    LoadingService.loadHide();
+  }
+  $scope.joinMatch = function(matchID) {
+      console.log(matchID);
+      $rootScope.currentMatchId = matchID;
+      $state.go('app.match');
+  }
+
+  $scope.showLoad();
+
   $scope.matchIDs.$loaded()
     .then(function(){
+        if ($scope.matchIDs.length < 1) {
+          $scope.viewTitle = "No Matches";
+        }else{
+          $scope.viewTitle = "Matches";
+        }
         angular.forEach($scope.matchIDs, function(match) {
             console.log(match.id);
             $scope.matches.push({
@@ -103,12 +136,8 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
               info: MatchService.getInfo(match.id)
             });
         })
+        $scope.hideLoad();
     });
-    $scope.joinMatch = function(matchID) {
-      console.log(matchID);
-      $rootScope.currentMatchId = matchID;
-      $state.go('app.match');
-    }
 })
 
 .controller('PlayerDetailCtrl', function($rootScope, $state, $scope, $stateParams, PeopleService, MatchService){
@@ -143,6 +172,23 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
 .factory("onlineUsers", ['$firebase', "$rootScope", function($firebase, $rootScope){
      var ref = new Firebase("https://chat-test-28.firebaseio.com/presence");
      return $firebase(ref.limitToLast(10)).$asArray();
+}])
+
+.factory("LoadingService", ['$firebase', "$rootScope", "$ionicLoading", function($firebase, $rootScope, $ionicLoading){
+      return {
+        loadShow: function(){
+          $ionicLoading.show({
+            content: '<i class="icon ion-load-c"></i>',
+            animation: 'fade-in',
+            showBackdrop: false,
+            maxWidth: 50,
+            showDelay: 0
+          });
+        },
+        loadHide: function() {
+          $ionicLoading.hide();
+        }
+      }
 }])
 
 .factory("MatchService", ['$firebase', "$rootScope", function($firebase, $rootScope){
