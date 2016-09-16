@@ -1,0 +1,14 @@
+<ion-view view-title="Edit Details">
+  <ion-content class="stable-bg">
+    <ion-item class="list">
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Status Message</span>
+        <input type="text" ng-model="player.pstatus" placeholder="{{player.status}}">
+        <button class="button button-full" ng-click="updateInfo(player.id, player.pstatus)">
+          <i class="icon ion-ios-checkmark-outline balanced"></i>
+            Update
+        </button>
+      </label>
+    </ion-item>
+  </ion-content>
+</ion-view>
