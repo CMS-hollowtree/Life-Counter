@@ -43,7 +43,7 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
       amOnline.on('value', function(snapshot) {
         if (snapshot.val()) {
           userRef.child('lastSeen').set(null);
-		  userRef.child('online').set(true);
+		      userRef.child('online').set(true);
           userRef.child('userName').set($rootScope.authData.google.displayName);
           userRef.child('imgURL').set($rootScope.authData.google.profileImageURL);
           userRef.child('uid').set($rootScope.authData.google.id);
@@ -63,7 +63,6 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
 
 	}else{
 		$scope.login();
-		//alert('wut');
 	}
 });
 })
@@ -106,7 +105,6 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
   $scope.person = PeopleService.getPerson($rootScope.authData.google.id);
   $scope.newData = {};
 
-  
   $scope.updateInfo = function(newData){
     PeopleService.updateInfo($rootScope.authData.google.id, newData);
   };
@@ -193,18 +191,18 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
 
 .controller('DecksCtrl', function($rootScope, $state, $scope, $stateParams, CardsService, PeopleService, DeckService){
   $scope.decks = PeopleService.getDecks($rootScope.authData.google.id);
-  $scope.cards = [];
+  //$scope.cards = [];
   //$scope.MTGcards = CardsService.getCards();
   
   
-  $scope.addCard=function(){
-    $scope.cards.push({})
-  }
+  //$scope.addCard=function(){
+  //  $scope.cards.push({})
+  //}
   $scope.goAddDeck = function(){
 	  $state.go('app.adddeck')
   }
-  $scope.addDeck = function(deckData) {
-	  DeckService.addDeck(deckData);
+  $scope.addDeck = function(deck) {
+	  DeckService.addDeck(deck);
   }
   
 })
@@ -221,8 +219,8 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
     updateInfo: function(personId, newData){
       return ref.child('presence').child(personId).update(newData);
     },
-	getDecks: function(personId) {
-		return $firebase(ref.child('presence').child(personId).child('decks')).$asArray();
+	  getDecks: function(personId) {
+		  return $firebase(ref.child('presence').child(personId).child('decks')).$asArray();
 	}
   }
 })
