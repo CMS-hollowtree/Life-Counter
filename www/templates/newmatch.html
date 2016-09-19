@@ -1,0 +1,16 @@
+<ion-view view-title="New Match">
+  <ion-content class="stable-bg">
+	<form ng-submit="updateInfo(newMatchInfo)">
+		<ion-item class="list">
+			<label class="item item-input item-stacked-label">
+				<span class="input-label">Match Title</span>
+				<input type="text" ng-model="newMatchInfo.title">
+				<button class="button button-full" type="submit">
+					<i class="icon ion-ios-checkmark-outline balanced"></i>
+						New Match
+				</button>
+			</label>
+		</ion-item>
+	</form>
+  </ion-content>
+</ion-view>

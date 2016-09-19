@@ -1,14 +1,31 @@
-<ion-view view-title="Edit Details">
-  <ion-content class="stable-bg">
-    <ion-item class="list">
-      <label class="item item-input item-stacked-label">
-        <span class="input-label">Status Message</span>
-        <input type="text" ng-model="player.pstatus" placeholder="{{player.status}}">
-        <button class="button button-full" ng-click="updateInfo(player.id, player.pstatus)">
+<ion-view>
+<ion-nav-title>Edit Details</ion-nav-title>
+  <ion-content class="scroll-content ionic-scroll has-header logoImage dark-bg">
+	<div class="hero" style="background-image: url('../img/wall.jpg');">
+		<div class="content">
+		<h2>{{player.userName}}</h2>
+			<p>{{player.status}}</p>
+			<div class="avatar" style="background-image: url({{player.imgURL}});">
+			
+			</div>
+		</div>
+	</div>
+  <form name="infoForm" ng-submit="updateInfo(newData)">
+    <ion-list>
+	<ion-item>
+	
+		<label class="item item-input item-floating-label stable">
+			<span class="input-label">Status Message</span>
+			<input type="text" ng-model="newData.status" placeholder="{{player.status}}">
+		</label>
+     
+	</ion-item>
+        <button class="button button-full" type="submit">
           <i class="icon ion-ios-checkmark-outline balanced"></i>
             Update
         </button>
-      </label>
-    </ion-item>
+		
+    </ion-list>
+	</form>
   </ion-content>
 </ion-view>

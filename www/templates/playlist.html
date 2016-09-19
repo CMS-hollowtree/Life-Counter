@@ -1,9 +1,11 @@
-<ion-view view-title="{{person.userName}}">
+<ion-view>
+<ion-nav-title>{{person.userName}}</ion-nav-title>
   <ion-content class="stable-bg">
     <div class="list card dark-bg">
       <div class="item item-avatar">
         <img ng-src="{{person.imgURL}}">
         <h2>{{person.userName}}</h2>
+		<p>{{person.status}}</p>
 		    <div ng-if="person.online">
 			       <span class="balanced">Online</span>
 		    </div>

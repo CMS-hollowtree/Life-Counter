@@ -1,0 +1,17 @@
+<ion-view view-title="Decks">
+  <ion-content class="stable-bg">
+    <div class="card list dark-bg" ng-repeat="deck in decks | orderBy:'':true">
+		<div class="item">
+			<h2>{{deck.$id}}</h2>
+		</div>
+    </ion-list>
+  </div>
+  <div class="deck-list" data-stub="theres-a-sliver-for-that">&nbsp;</div>
+  
+  <ion-footer-bar align-title="center" class="bar-dark">
+    <div class="buttons buttons-right">
+      <button class="button button-fab button-balanced icon ion-plus-round" ng-click="goAddDeck()"></button>
+    </div>
+ 
+  </ion-footer-bar>
+</ion-view>

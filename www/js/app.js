@@ -71,6 +71,42 @@ angular.module('starter', ['ionic', 'starter.controllers', 'angularMoment', 'ion
         }
       }
     })
+	.state('app.decks', {
+      url: '/decks',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/decks.html',
+          controller: 'DecksCtrl'
+        }
+      }
+    })
+	.state('app.adddeck', {
+      url: '/adddeck',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/adddeck.html',
+          controller: 'DecksCtrl'
+        }
+      }
+    })
+	.state('app.cards', {
+      url: '/cards',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/cards.html',
+          controller: 'CardsCtrl'
+        }
+      }
+    })
+	.state('app.newmatch', {
+      url: '/newmatch',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/newmatch.html',
+          controller: 'NewMatchCtrl'
+        }
+      }
+    })
   .state('app.playlist', {
     url: '/playlist/:id',
     views: {

@@ -16,7 +16,7 @@
     <ion-header-bar class="bar">
       <h1 class="title">Menu</h1>
     </ion-header-bar>
-    <ion-content>
+    <ion-content class="stable-bg">
       <ion-list>
         <div ng-if="online">
 
@@ -30,6 +30,12 @@
        </div>
         <ion-item menu-close ng-click="login()">
           Login
+        </ion-item>
+		<ion-item menu-close href="#/app/cards">
+          MTG Cards
+        </ion-item>
+		<ion-item menu-close href="#/app/decks">
+          Decks
         </ion-item>
         <ion-item menu-close href="#/app/matches">
           Matches

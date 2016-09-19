@@ -1,4 +1,5 @@
-<ion-view view-title="Match">
+<ion-view>
+<ion-nav-title>{{matchInfo.title}}</ion-nav-title>
   <ion-content class="stable-bg">
 <div class="list card dark-bg" ng-repeat="player in players" scroll="false">
   <div class="item item-avatar">
@@ -16,7 +17,7 @@
       <button class="button button-fab button-balanced icon ion-plus-round" ng-click="addLife()"></button>
     </div>
     <div class="buttons buttons-left">
-      <button class="button button-fab button-assertive icon ion-minus-round" ng-click="subLife()"></button>
+      <button class="button button-fab button-assertive icon ion-minus-round" href="#/app/addDeck"></button>
     </div>
   </ion-footer-bar>
 </ion-view>

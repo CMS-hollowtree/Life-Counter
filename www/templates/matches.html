@@ -1,11 +1,13 @@
-<ion-view view-title="{{viewTitle}}">
+<ion-view>
+<ion-nav-title>{{viewTitle}}</ion-nav-title>
   <ion-content class="stable-bg">
-  <ion-list ng-repeat="match in matches | orderBy:'':true" ng-if="matches.length > 0">
+  <ion-list ng-repeat="match in matches | orderBy:'':true" ng-if="matches.length > 0" show-delete="false" can-swipe="true">
 	   <div class="card dark-bg" ng-click="joinMatch(match.id)">
 		    <ion-item class="item item-divider">
         <span class="stable">
-			     {{match.info.matchNic}}
+			     {{match.info.title}}
         </span>
+		
 	</ion-item>
 		<div class="item item-text-wrap">
 			<ion-item class="item item-avatar" ng-repeat="player in match.data">
@@ -15,6 +17,7 @@
                {{player.currentLife}}
             </span>
       </ion-item>
+	  
 		</div>
 		<ion-item class="item item-divider">
 			<span class="stable">
