@@ -4,11 +4,28 @@
   <form name="infoForm" ng-submit="addDeck(newData)">
     <ion-list>
 		<ion-item>
-			<label class="item item-input item-floating-label stable">
+			<label class="item item-input item-floating-label">
 				<input type="text" ng-model="deck.name" placeholder="Deck Name">
 			</label> 
-		
 		</ion-item>
+		<div class="list" ng-repeat="card in dCards">		
+			<h2>{{card}}</h2>
+			<p ng-if="card.quantity">{{card.quantity}}</p>
+		</div>
+		<label class="item item-input item-floating-label">
+			<input type="text" ng-model="searchText" ng-change="change(searchText)" placeholder="Search" />
+		</label>
+		<div class="list" ng-repeat="entry in entries |limitTo: 1">
+			<div class="list card light-bg" ng-repeat="entry in entries">
+			<a class="item item-icon-left balanced" href="#" ng-click="addCard(entry.name)">
+					<i class="icon ion-plus"></i>
+						{{entry.name}}
+					</a>
+				<div class="item item-image">
+					<img ng-src="{{entry.editions[0].image_url}}"></img>
+				</div>
+			</div>
+		</div>
         <button class="button button-full" type="submit">
           <i class="icon ion-ios-checkmark-outline balanced"></i>
             Add Deck

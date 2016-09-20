@@ -1,0 +1,94 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   '-g',
+1 verbose cli   'install',
+1 verbose cli   'angular-livesearch' ]
+2 info using npm@2.15.9
+3 info using node@v4.5.0
+4 verbose install initial load of C:\Users\root\AppData\Roaming\npm\package.json
+5 verbose readDependencies loading dependencies from C:\Users\root\AppData\Roaming\npm\package.json
+6 silly cache add args [ 'angular-livesearch', null ]
+7 verbose cache add spec angular-livesearch
+8 silly cache add parsed spec Result {
+8 silly cache add   raw: 'angular-livesearch',
+8 silly cache add   scope: null,
+8 silly cache add   name: 'angular-livesearch',
+8 silly cache add   rawSpec: '',
+8 silly cache add   spec: 'latest',
+8 silly cache add   type: 'tag' }
+9 silly addNamed angular-livesearch@latest
+10 verbose addNamed "latest" is being treated as a dist-tag for angular-livesearch
+11 info addNameTag [ 'angular-livesearch', 'latest' ]
+12 silly mapToRegistry name angular-livesearch
+13 silly mapToRegistry using default registry
+14 silly mapToRegistry registry https://registry.npmjs.org/
+15 silly mapToRegistry data Result {
+15 silly mapToRegistry   raw: 'angular-livesearch',
+15 silly mapToRegistry   scope: null,
+15 silly mapToRegistry   name: 'angular-livesearch',
+15 silly mapToRegistry   rawSpec: '',
+15 silly mapToRegistry   spec: 'latest',
+15 silly mapToRegistry   type: 'tag' }
+16 silly mapToRegistry uri https://registry.npmjs.org/angular-livesearch
+17 verbose addNameTag registry:https://registry.npmjs.org/angular-livesearch not in flight; fetching
+18 verbose request uri https://registry.npmjs.org/angular-livesearch
+19 verbose request no auth needed
+20 info attempt registry request try #1 at 8:03:58 PM
+21 verbose request id 06a11864ab1f9caa
+22 http request GET https://registry.npmjs.org/angular-livesearch
+23 http 404 https://registry.npmjs.org/angular-livesearch
+24 verbose headers { 'content-type': 'application/json',
+24 verbose headers   'cache-control': 'max-age=0',
+24 verbose headers   'content-length': '2',
+24 verbose headers   'accept-ranges': 'bytes',
+24 verbose headers   date: 'Tue, 20 Sep 2016 00:03:49 GMT',
+24 verbose headers   via: '1.1 varnish',
+24 verbose headers   age: '0',
+24 verbose headers   connection: 'keep-alive',
+24 verbose headers   'x-served-by': 'cache-ord1731-ORD',
+24 verbose headers   'x-cache': 'MISS',
+24 verbose headers   'x-cache-hits': '0',
+24 verbose headers   'x-timer': 'S1474329829.085084,VS0,VE353',
+24 verbose headers   vary: 'Accept-Encoding' }
+25 silly get cb [ 404,
+25 silly get   { 'content-type': 'application/json',
+25 silly get     'cache-control': 'max-age=0',
+25 silly get     'content-length': '2',
+25 silly get     'accept-ranges': 'bytes',
+25 silly get     date: 'Tue, 20 Sep 2016 00:03:49 GMT',
+25 silly get     via: '1.1 varnish',
+25 silly get     age: '0',
+25 silly get     connection: 'keep-alive',
+25 silly get     'x-served-by': 'cache-ord1731-ORD',
+25 silly get     'x-cache': 'MISS',
+25 silly get     'x-cache-hits': '0',
+25 silly get     'x-timer': 'S1474329829.085084,VS0,VE353',
+25 silly get     vary: 'Accept-Encoding' } ]
+26 verbose stack Error: Registry returned 404 for GET on https://registry.npmjs.org/angular-livesearch
+26 verbose stack     at makeError (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:264:12)
+26 verbose stack     at CachingRegistryClient.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:242:14)
+26 verbose stack     at Request._callback (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:172:14)
+26 verbose stack     at Request.self.callback (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:200:22)
+26 verbose stack     at emitTwo (events.js:87:13)
+26 verbose stack     at Request.emit (events.js:172:7)
+26 verbose stack     at Request.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:1067:10)
+26 verbose stack     at emitOne (events.js:82:20)
+26 verbose stack     at Request.emit (events.js:169:7)
+26 verbose stack     at IncomingMessage.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:988:12)
+27 verbose statusCode 404
+28 verbose pkgid angular-livesearch
+29 verbose cwd C:\Users\root\Documents\GitHub\Life-Counter
+30 error Windows_NT 10.0.10586
+31 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "-g" "install" "angular-livesearch"
+32 error node v4.5.0
+33 error npm  v2.15.9
+34 error code E404
+35 error 404 Registry returned 404 for GET on https://registry.npmjs.org/angular-livesearch
+35 error 404
+35 error 404 'angular-livesearch' is not in the npm registry.
+35 error 404 You should bug the author to publish it (or use the name yourself!)
+35 error 404
+35 error 404 Note that you can also install from a
+35 error 404 tarball, folder, http url, or git url.
+36 verbose exit [ 1, true ]

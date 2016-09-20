@@ -170,41 +170,60 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
   
 })
 
-.controller('CardsCtrl', function($rootScope, $state, $scope, $stateParams, CardsService, LoadingService){
-  $scope.cards = CardsService.getCards();
-  
-  $scope.showLoad = function() {
-    LoadingService.loadShow();
-  }
-  $scope.hideLoad = function() {
-    LoadingService.loadHide();
-  }
-  
-  $scope.showLoad();
-  
-  $scope.cards.$loaded()
-    .then(function(){
-        $scope.hideLoad();
-    });
+.controller('CardsCtrl', function($rootScope, $state, $scope, $http, $timeout, $stateParams, CardsService, LoadingService){	
+	$scope.url = 'https://api.deckbrew.com/mtg/cards?name=';
+	$scope.showLoad = function() {
+		LoadingService.loadShow();
+	}
+	$scope.hideLoad = function() {
+		LoadingService.loadHide();
+	}
+	
+    $scope.change = function(searchText) {
+		$scope.showLoad();
+        valtosend = searchText;
+        $http.get($scope.url + valtosend).then(function(result){
+            $scope.entries = result.data;
+			if ($scope.entries){
+					$scope.hideLoad();
+			}
+        });
+    };
 
 })
 
-.controller('DecksCtrl', function($rootScope, $state, $scope, $stateParams, CardsService, PeopleService, DeckService){
+.controller('DecksCtrl', function($rootScope, $state, $scope, $stateParams, $http, CardsService, PeopleService, DeckService){
+  	$scope.url = 'https://api.deckbrew.com/mtg/cards?name=';
   $scope.decks = PeopleService.getDecks($rootScope.authData.google.id);
-  //$scope.cards = [];
-  //$scope.MTGcards = CardsService.getCards();
-  
-  
-  //$scope.addCard=function(){
-  //  $scope.cards.push({})
-  //}
+  $scope.inputs = [];
+  $scope.dCards = [];
+  $scope.addfield=function(){
+    $scope.inputs.push({})
+  }
   $scope.goAddDeck = function(){
 	  $state.go('app.adddeck')
   }
   $scope.addDeck = function(deck) {
 	  DeckService.addDeck(deck);
   }
-  
+  $scope.change = function(searchText) {
+		
+        valtosend = searchText;
+        $http.get($scope.url + valtosend).then(function(result){
+            $scope.entries = result.data;
+        });
+    };
+	
+	$scope.addCard = function(cardName){
+		if ($scope.dCards.indexOf(cardName) === -1) {
+			$scope.dCards.push(cardName);
+			console.log('added ', cardName);
+		}else{
+			return $scope.dCards[cardName].quantity +1;
+			console.log('index', $scope.dCards.indexOf(cardName))
+			
+		}
+	}
 })
 
 .factory('PeopleService', function($firebase, $rootScope){
@@ -240,14 +259,16 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
 		}
 }])
 
-.factory("CardsService", ['$firebase', "$rootScope", function($firebase, $rootScope){
-     return {
-		 getCards: function() {
-			 var ref = new Firebase("https://chat-test-28.firebaseio.com/MTGCards");
-				return $firebase(ref).$asArray();
+.factory("CardsService", ['$firebase', "$rootScope", "$http", function($firebase, $rootScope, $http){
+     var url = 'https://api.deckbrew.com/mtg/cards?name='
+	 return {
+		 getCards: function(query) {
+			 return $http.get(url + query).then(function(response){
+				cards = response;
+				return cards;
+			});
 		 }
-	 }
-	 
+	 }	 
 }])
 
 .factory("LoadingService", ['$firebase', "$rootScope", "$ionicLoading", function($firebase, $rootScope, $ionicLoading){

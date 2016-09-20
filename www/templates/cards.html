@@ -1,14 +1,13 @@
 <ion-view view-title="MTG Cards">
-  <ion-content class="stable-bg">
-  <label class="item item-input">
-	<i class="icon ion-search placeholder-icon"></i>
-	<input type="search" placeholder="Search" ng-model="card.name">
+  <ion-content class="light-bg">
+  <label class="item item-input item-floating-label">
+	
+	<input type="text" ng-model="searchText" ng-change="change(searchText)" placeholder="Search" />
   </label>
-    <ion-list class="card list dark-bg" ng-repeat="card in cards | filter:card.name | limitTo: 1 | orderBy:'name'" ng-show="card.name">
-		<ion-item>
-			<h2>{{card.name}}</h2>
-			
-		</ion-item>
-    </ion-list>
-
+    <div class="list card light-bg" ng-repeat="entry in entries">
+		<div class="item item-image">
+				<img ng-src="{{entry.editions[0].image_url}}"></img>
+			</div>
+	</div>
+	</ion-content>
 </ion-view>
