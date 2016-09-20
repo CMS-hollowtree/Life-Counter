@@ -184,9 +184,9 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
         valtosend = searchText;
         $http.get($scope.url + valtosend).then(function(result){
             $scope.entries = result.data;
-			if ($scope.entries){
-					$scope.hideLoad();
-			}
+			      if ($scope.entries){
+					     $scope.hideLoad();
+			      }
         });
     };
 
@@ -207,7 +207,6 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
 	  DeckService.addDeck(deck);
   }
   $scope.change = function(searchText) {
-		
         valtosend = searchText;
         $http.get($scope.url + valtosend).then(function(result){
             $scope.entries = result.data;
@@ -215,12 +214,14 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
     };
 	
 	$scope.addCard = function(cardName){
-		if ($scope.dCards.indexOf(cardName) === -1) {
+		if ($scope.dCards.indexOf(cardName) == -1) {
+      console.log('index of ', cardName, $scope.dCards.indexOf(cardName) );
 			$scope.dCards.push(cardName);
 			console.log('added ', cardName);
 		}else{
-			return $scope.dCards[cardName].quantity +1;
-			console.log('index', $scope.dCards.indexOf(cardName))
+      var nCardName = cardName;
+			nCardName.quantity = 0;
+			console.log($scope.dCards[nCardName]);
 			
 		}
 	}
