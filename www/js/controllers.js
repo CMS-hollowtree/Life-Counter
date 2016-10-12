@@ -1,80 +1,55 @@
 angular.module('starter.controllers', ['ionic', 'firebase'])
 
-.controller('AppCtrl', function($rootScope, $scope, $ionicModal, $timeout, onlineUsers, PeopleService) {
-  // Form data for the login modal
-  $scope.loginData = {};
-
-  // Create the login modal that we will use later
-  $ionicModal.fromTemplateUrl('templates/login.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.modal = modal;
-  });
-
-  // Triggered in the login modal to close it
-  $scope.closeLogin = function() {
-    $scope.modal.hide();
-  };
-
-  // Open the login modal
-  $scope.login = function() {
-    $scope.modal.show();
-  };
-
-  // Perform the login action when the user submits the login form
-  $scope.doLogin = function() {
-    console.log('Doing login', $scope.loginData);
-    $scope.users = onlineUsers;
-    $scope.user = {};
-    var ref = new Firebase('https://chat-test-28.firebaseio.com/');
-
-    ref.authWithOAuthPopup('google', function(error, authData) {
-      var authData = ref.getAuth();
-      if(error){
-        alert('error');
+.controller('AppCtrl', function($rootScope, $scope, $state, $ionicModal, $timeout, onlineUsers, PeopleService, AuthService, LoadingService) {
+  $scope.showLoad = function() {
+    LoadingService.loadShow();
+  }
+  $scope.hideLoad = function() {
+    LoadingService.loadHide();
+  }
+  $scope.doWait = function(_callback) {
+    $scope.showLoad()
+    _callback();
+  }
+  $scope.getPlayer = function(data) {
+    $scope.player = PeopleService.getPerson($rootScope.authData.google.id);
+    $scope.hideLoad();
+  }
+  function waitForElement(){
+    if($rootScope.online) {
+        $scope.getPlayer();
+    }else{
+        setTimeout(function(){
+          waitForElement();
+          console.log('still waiting...');
+        },250);
       }
-      else {
-        //alert('success');
-      }
-      $rootScope.authData = authData;
-      var amOnline = new Firebase('https://chat-test-28.firebaseio.com/.info/connected');
-      var userRef = new Firebase('https://chat-test-28.firebaseio.com/presence/' + $rootScope.authData.google.id);
-
-      amOnline.on('value', function(snapshot) {
-        if (snapshot.val()) {
-          userRef.child('lastSeen').set(null);
-		      userRef.child('online').set(true);
-          userRef.child('userName').set($rootScope.authData.google.displayName);
-          userRef.child('imgURL').set($rootScope.authData.google.profileImageURL);
-          userRef.child('uid').set($rootScope.authData.google.id);
-          $scope.player = PeopleService.getPerson($rootScope.authData.google.id);
-          $rootScope.online = true;
-
-		  userRef.child('lastSeen').onDisconnect().set(Firebase.ServerValue.TIMESTAMP);
-		  userRef.child('online').onDisconnect().set(null);
-        }
+  }
+  $scope.$on('$ionicView.beforeEnter', function(e) {
+    if (!AuthService.isAuthenticated()) {
+      $scope.doWait(function() {
+        waitForElement();
       });
-    });
-  $scope.closeLogin();
-  };
-  
-  $scope.$on('$ionicView.enter', function(e) {
-	if ($rootScope.online == true) {
-
-	}else{
-		$scope.login();
-	}
+    }else{     
+  }
 });
+  
 })
 
-.controller('RegsiterCtrl', function($rootScope, $scope, $timeout, onlineUsers, PeopleService){
-   
+.controller('RegisterCtrl', function($rootScope, $scope, $state, $ionicModal, $timeout, $ionicHistory, onlineUsers, PeopleService, LoadingService, AuthService){
+  $scope.showLoad = function() {
+    LoadingService.loadShow();
+  }
+  $scope.hideLoad = function() {
+    LoadingService.loadHide();
+  }
+  
 })
 
 .controller('PlayerCtrl', function($rootScope, $scope, onlineUsers, PeopleService, MatchService) {
    $scope.players = MatchService.getPeople($rootScope.currentMatchId);
    $scope.matchInfo = MatchService.getInfo($rootScope.currentMatchId);
-   
+
    $scope.addLife = function() {
       MatchService.addLife();
     };
@@ -83,7 +58,7 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
     };
 })
 
-.controller('MasterCtrl', function($scope, PeopleService, LoadingService){
+.controller('MasterCtrl', function($rootScope, $scope, $state, PeopleService, LoadingService){
   $scope.people = PeopleService.getPeople();
 
   $scope.showLoad = function() {
@@ -137,7 +112,10 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
 	MatchService.joinMatch(matchID);
   }
 
-  $scope.showLoad();
+  $scope.$on('$ionicView.beforeEnter', function(e) {
+    $scope.showLoad();
+    
+  });
 
   $scope.matchIDs.$loaded()
     .then(function(){
@@ -248,6 +226,49 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
 .factory("onlineUsers", ['$firebase', "$rootScope", function($firebase, $rootScope){
      var ref = new Firebase("https://chat-test-28.firebaseio.com/presence");
      return $firebase(ref.limitToLast(10)).$asArray();
+}])
+
+.factory("AuthService", ['$firebase', "$rootScope", function($firebase, $rootScope){
+  return {
+    doLogin: function() { 
+      var ref = new Firebase('https://chat-test-28.firebaseio.com/');
+      ref.authWithOAuthPopup('google', function(error, authData) {
+        var authData = ref.getAuth();
+          if(error){
+            alert('error');
+          }
+
+        $rootScope.authData = authData;
+        console.log(authData);
+        var amOnline = new Firebase('https://chat-test-28.firebaseio.com/.info/connected');
+        var userRef = new Firebase('https://chat-test-28.firebaseio.com/presence/' + $rootScope.authData.google.id);
+
+        amOnline.on('value', function(snapshot) {
+          if (snapshot.val()) {
+            userRef.child('lastSeen').set(null);
+            userRef.child('online').set(true);
+            userRef.child('userName').set($rootScope.authData.google.displayName);
+            userRef.child('imgURL').set($rootScope.authData.google.profileImageURL);
+            userRef.child('uid').set($rootScope.authData.google.id);
+            $rootScope.online = true;
+
+            userRef.child('lastSeen').onDisconnect().set(Firebase.ServerValue.TIMESTAMP);
+            userRef.child('online').onDisconnect().set(null);
+        }
+      });
+
+    });
+      return $rootScope.authdata;
+  },
+  isAuthenticated: function(){
+    if ($rootScope.online === true) {
+      return true;
+    }else{
+      return false;
+    }
+  }
+}
+
 }])
 
 .factory("DeckService", ['$firebase', "$rootScope", function($firebase, $rootScope){

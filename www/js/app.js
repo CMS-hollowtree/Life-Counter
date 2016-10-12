@@ -9,32 +9,50 @@
 //ngModule.constant('moment');
 angular.module('starter', ['ionic', 'starter.controllers', 'angularMoment', 'ionic-material'])
 
-.run(function($ionicPlatform) {
+.run(function($rootScope, $ionicPlatform, $state, AuthService) {
   $ionicPlatform.ready(function() {
+    if (!AuthService.isAuthenticated()) {
+      AuthService.doLogin();
+      console.log('Logging in');
+    }
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
-
     }
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+    $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
+      if (!AuthService.isAuthenticated()) {
+          AuthService.doLogin();
+          //$state.go('login');
+          console.log('Logging in');
+        }
+      }
+    );
   });
 })
 
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
-
     .state('app', {
     url: '/app',
     abstract: true,
     templateUrl: 'templates/menu.html',
     controller: 'AppCtrl'
   })
-
+  .state('app.register', {
+      url: '/register',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/register.html',
+          controller: 'RegisterCtrl'
+        }
+      }
+    })
   .state('app.browse', {
       url: '/browse',
       views: {
