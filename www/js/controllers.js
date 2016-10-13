@@ -30,9 +30,10 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
       $scope.doWait(function() {
         waitForElement();
       });
-    }else{     
-  }
-});
+    }else{ 
+      //    
+    }
+  });
   
 })
 
@@ -43,7 +44,6 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
   $scope.hideLoad = function() {
     LoadingService.loadHide();
   }
-  
 })
 
 .controller('PlayerCtrl', function($rootScope, $scope, onlineUsers, PeopleService, MatchService) {
@@ -83,7 +83,6 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
   $scope.updateInfo = function(newData){
     PeopleService.updateInfo($rootScope.authData.google.id, newData);
   };
-  
 })
 
 .controller('NewMatchCtrl', function($rootScope, $scope, $state, PeopleService, MatchService){
@@ -144,8 +143,6 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
     MatchService.addMatch(personId, $scope.person.imgURL, $scope.person.userName);
     $state.go('app.newmatch');
   };
-  
-  
 })
 
 .controller('CardsCtrl', function($rootScope, $state, $scope, $http, $timeout, $stateParams, CardsService, LoadingService){	
@@ -171,7 +168,7 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
 })
 
 .controller('DecksCtrl', function($rootScope, $state, $scope, $stateParams, $http, CardsService, PeopleService, DeckService){
-  	$scope.url = 'https://api.deckbrew.com/mtg/cards?name=';
+  $scope.url = 'https://api.deckbrew.com/mtg/cards?name=';
   $scope.decks = PeopleService.getDecks($rootScope.authData.google.id);
   $scope.inputs = [];
   $scope.dCards = [];
@@ -237,12 +234,10 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
           if(error){
             alert('error');
           }
-
         $rootScope.authData = authData;
         console.log(authData);
         var amOnline = new Firebase('https://chat-test-28.firebaseio.com/.info/connected');
         var userRef = new Firebase('https://chat-test-28.firebaseio.com/presence/' + $rootScope.authData.google.id);
-
         amOnline.on('value', function(snapshot) {
           if (snapshot.val()) {
             userRef.child('lastSeen').set(null);
@@ -251,24 +246,21 @@ angular.module('starter.controllers', ['ionic', 'firebase'])
             userRef.child('imgURL').set($rootScope.authData.google.profileImageURL);
             userRef.child('uid').set($rootScope.authData.google.id);
             $rootScope.online = true;
-
             userRef.child('lastSeen').onDisconnect().set(Firebase.ServerValue.TIMESTAMP);
             userRef.child('online').onDisconnect().set(null);
         }
       });
-
     });
       return $rootScope.authdata;
-  },
-  isAuthenticated: function(){
-    if ($rootScope.online === true) {
-      return true;
-    }else{
-      return false;
+    },
+    isAuthenticated: function(){
+      if ($rootScope.online === true) {
+        return true;
+      }else{
+        return false;
+      }
     }
   }
-}
-
 }])
 
 .factory("DeckService", ['$firebase', "$rootScope", function($firebase, $rootScope){
